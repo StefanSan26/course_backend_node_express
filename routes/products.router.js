@@ -1,20 +1,12 @@
 const express = require('express')
-const faker = require('faker')
+const ProductsService =require('../services/products.services')
 
 const router = express.Router()
 
-router.get('/',(req, res)=>{
-  const products=[]
-  const {size} = req.query
-  const limit = size || 10;
-  for (let i = 0; i < limit; i++) {
-    products.push({
-      name:faker.commerce.productName(),
-      price:parseInt(faker.commerce.price(),10),
-      image: faker.image.imageUrl()
-    })
-  }
-    res.json(products)
+const service = new ProductsService()
+router.get('/',async (req, res)=>{
+  const products = await service.find()
+  res.json(products)
 })
 
 //error comun: Enpoints estaticos que entran en conflicto con Endpoints dinamicos
@@ -23,43 +15,42 @@ router.get('/filter',(req,res)=>{
   res.send = ('soy un filter')
 })
 
-router.get('/:id' , (req,res)=>{
+router.get('/:id' ,async (req,res,next)=>{
   const {id} = req.params
-  res.json({
-    id,
-    name:'Jabon',
-    price:2000,
-    available:true
-  })
+  try {
+    const product = await service.findOne(id)
+    res.json(product)
+  } catch (error) {
+    next(error)
+  }
 } )
 
 
 //Para recibir el POST
-router.post('/',(req,res)=>{
+router.post('/',async (req,res)=>{
   const body = req.body
-  res.json({
-    message:'created',
-    data:body
-  })
+  const create = await service.create(body)
+  res.status(201).json(create)
 })
 
 //Para hacer el Patch
-router.patch('/:id',(req,res)=>{
-  const {id} = req.params
-  const body = req.body
-  res.json({
-    message:'updated',
-    data:body,
-    id
-  })
+router.patch('/:id',async(req,res)=>{
+  try {
+    const {id} = req.params
+    const body = req.body
+    const update = await service.update(id,body)
+    res.json(update)
+  } catch (error) {
+    res.status(404).json({
+      message: error.message
+    })
+  }
 })
 //Delete
-router.delete('/:id',(req,res)=>{
+router.delete('/:id',async (req,res)=>{
   const {id} = req.params
-  res.json({
-    message:'Deleted',
-    id
-  })
+  const deleted = await service.delete(id)
+  res.json(deleted)
 })
 
 module.exports = router

@@ -1,21 +1,19 @@
 const express = require('express')
+const UsersService = require('../services/users.services')
 
 const router = express.Router()
+const service = new UsersService
 
-//GET: Parametros Query
+router.get('/' , (req,res)=>{
+  users = service.find()
+  res.json(users)
+} )
+router.get('/:id' , (req,res)=>{
+  const {id} = req.params
+  user = service.findOne(id)
+  res.json(user)
+} )
 
-router.get('/',(req,res)=>{
-  const {limit, offset} = req.query
-  if (limit && offset) {
-    res.json({
-      limit,
-      offset
-    })
-  }else{
-    res.send('Falta enviar los parametros')
-  }
-
-})
 
 
 module.exports = router

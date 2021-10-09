@@ -18,22 +18,42 @@ class CategoriesService {
       })
     }
   }
-  create(){
+  async create(data){
+    const newCategory = {
+      id: faker.datatype.uuid(),
+      ...data
+    }
+    this.categories.push(newCategory)
+    return newCategory
   }
 
-  find(){
+  async find(){
     return this.categories
   }
 
-  findOne(id){
+  async findOne(id){
     return this.categories.find(item => item.id === id)
   }
-  update(){
-
+  async update(id,data){
+    const index = this.categories.findIndex(item => item.id === id)
+    if(index ==-1){
+      throw console.error('Categoria no encontrada')
+    }
+    const category = this.categories[index]
+    this.categories[index]= {
+      ...category,
+      ...data
+    }
+    return this.categories[index]
   }
 
-  delete(){
-
+  async delete(id){
+    const index = this.categories.findIndex(item => item.id === id)
+    if(index == -1){
+      throw console.error('Categoria no encontrada')
+    }
+    const category = this.categories.splice(index,1)
+    return category
   }
 }
 

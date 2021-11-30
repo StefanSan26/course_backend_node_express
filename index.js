@@ -1,7 +1,7 @@
 const express = require('express')
 const routerApi = require('./routes')
 const cors = require('cors')
-const {logErrors,errorHandler,boomErrorHandler} = require('./middlewares/error.handling')
+const {logErrors,errorHandler,boomErrorHandler,queryErrorHandler} = require('./middlewares/error.handling')
 
 const app =  express()
 const port = process.env.PORT || 6969    //si heroku trae la variable de entorno pues correrlo en ese puerto, en caso que no correrlos en el puerto 6969
@@ -36,6 +36,7 @@ routerApi(app);
 
 //middlewares para recibir errores
 app.use(logErrors)
+app.use(queryErrorHandler)
 app.use(boomErrorHandler)
 app.use(errorHandler)
 

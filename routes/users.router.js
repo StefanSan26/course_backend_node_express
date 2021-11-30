@@ -6,6 +6,7 @@ const validatorHandler = require('./../middlewares/validator.handler');
 const { updateUserSchema, createUserSchema, getUserSchema } = require('./../schemas/users.schemas');
 
 
+
 router.get('/', async (req, res, next) => {
   try {
     const categories = await service.find();

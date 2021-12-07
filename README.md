@@ -1,4 +1,4 @@
-# Course Backend With Node and Express.js
+# Backend Course With Node and Express.js
 
 ## GET method: Endpoints
 
